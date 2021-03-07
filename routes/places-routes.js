@@ -5,7 +5,7 @@ const placesController = require('../controllers/places-controller');
 
 // GET
 router.get('/:id', placesController.getPlaceById);
-router.get('/user/:id', placesController.getPlaceByUserId);
+router.get('/user/:id', placesController.getPlacesByUserId);
 
 // POST
 router.post('/', placesController.createPlace);
