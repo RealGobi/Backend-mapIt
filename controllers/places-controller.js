@@ -79,3 +79,5 @@ exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 
 exports.createPlace = createPlace;
+exports.updatePlace = updatePlace;
+exports.deletePlace = deletePlace;
