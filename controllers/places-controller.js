@@ -77,6 +77,9 @@ const updatePlace = (req, res, next) => {
 };
 
 const deletePlace = (req, res, next) => {
+  const id = req.params.id;
+  DUMMY_DATA = DUMMY_DATA.filter(p => p.id !== id);
+  res.status(200).json({msg: 'Deleted!'})
 };
 
 exports.getPlaceById = getPlaceById;
