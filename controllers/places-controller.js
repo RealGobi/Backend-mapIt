@@ -75,6 +75,10 @@ const updatePlace = (req, res, next) => {
   DUMMY_DATA.push(updatePlace);
   res.status(201).json({place: updatePlace});
 };
+
+const deletePlace = (req, res, next) => {
+};
+
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 
