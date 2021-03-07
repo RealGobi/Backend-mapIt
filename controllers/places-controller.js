@@ -60,6 +60,21 @@ const createPlace = (req, res, next) => {
   res.status(201).json({place: createdPlace});
 }
 
+const updatePlace = (req, res, next) => {
+  const { title, description} = req.body;
+  const id = req.params.id;
+  const updatePlace = { ...DUMMY_DATA.find(p => p.id === id) };
+  const placeIndex = DUMMY_DATA.find(p => p.id === id);
+  updatePlace.title = title;
+  updatePlace.description = description;
+
+  DUMMY_DATA[placeIndex] = updatePlace;
+
+  res.status(200).json({place: updatePlace}); 
+
+  DUMMY_DATA.push(updatePlace);
+  res.status(201).json({place: updatePlace});
+};
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 
