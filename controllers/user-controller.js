@@ -1,5 +1,6 @@
 const uuid = require('uuid/v4');
 const HttpError = require('../models/http.error');
+const { validationResult } = require('express-validator');
 
 
 const DUMMY_DATA = [
@@ -16,13 +17,17 @@ const getUsers = ((req, res, next) => {
 });
 
 const signUpUser = ((req, res, next) => {
-  const { name, email, password } = req.body;
 
+  const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      throw new HttpError('Unable to signup, please check your data, password min 6 character.', 422)
+    }
+  
+  const { name, email, password } = req.body;
   const emailInDB = DUMMY_DATA.find(s => s.email === email);
 
   if(emailInDB) {
     throw new HttpError('Email alredy in databas.', 422)
-
   }
 
   const createUser = {
