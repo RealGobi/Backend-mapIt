@@ -1,6 +1,7 @@
 const HttpError = require('../models/http.error');
 const uuid = require('uuid/v4');
 const { validationResult } = require('express-validator');
+const Place = require('../models/place');
 
 const getCoordsForAddress = require('../util/location');
 
@@ -61,16 +62,23 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-    id: uuid(),
+  const createdPlace = new Place({
     title, 
     description,
-    location: coordinates,
     address,
+    location: coordinates,
+    image: 'https://sv.wikipedia.org/wiki/Portal:Huvudsida#/media/Fil:Terrakottaarm%C3%A9n-1.jpg',
     creator
+  });
+
+  try {
+    await createdPlace.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError('Faild to create place', 500);
+    return next(error);
   }
 
-  DUMMY_DATA.push(createdPlace);
   res.status(201).json({place: createdPlace});
 }
 
