@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const HttpError = require('./models/http.error');
+const config = require('config');
 
 const placesRoute = require('./routes/places-routes');
 const usersRoute = require('./routes/users-routes');
@@ -29,7 +30,6 @@ const mongoURI = config.get('mongoURI');
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true } )
 .then(() => {
   app.listen(5000);
-
   console.log('Connected!');
 })
 .catch((err) => console.log(err));
