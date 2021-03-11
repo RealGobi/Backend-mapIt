@@ -1,5 +1,4 @@
 const HttpError = require('../models/http.error');
-const uuid = require('uuid/v4');
 const { validationResult } = require('express-validator');
 const Place = require('../models/place');
 
@@ -82,9 +81,9 @@ const createPlace = async (req, res, next) => {
 
 const updatePlace = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors);
+  
   if(!errors.isEmpty()) {
-    throw new HttpError('Unable to update, please check your data.', 422)
+    return next(new HttpError('Unable to update, please check your data.', 422));
   }
 
   const { title, description } = req.body;
