@@ -3,18 +3,18 @@ const HttpError = require('../models/http.error');
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 
-const DUMMY_DATA = [
-  {
-    id: "u1",
-    name: 'Jimmy',
-    email: "jimmy@jimmy.se",
-    password: 'test'
-  }
-];
 
-const getUsers = ((req, res, next) => {
-  res.status(200).json({users: DUMMY_DATA})
-});
+const getUsers = async(req, res, next) => {
+  let users;
+  try {
+    users = await User.find({}, '-password');
+  } catch (err) {
+    const error = new HttpError('Fetching users failed, please tyr agin.', 500);
+    return next(error);
+  }
+
+  res.json({users: users.map(u => u.toObject({getters: true}))}); 
+};
 
 const signUpUser = async (req, res, next) => {
 
@@ -23,7 +23,7 @@ const signUpUser = async (req, res, next) => {
       return next(new HttpError('Unable to signup, please check your data, password min 6 character.', 422)); 
     }
   
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let existingUser;
   try {
@@ -42,7 +42,7 @@ const signUpUser = async (req, res, next) => {
     email,
     image: 'https://en.wikipedia.org/wiki/File:Akha_cropped_hires.JPG',
     password,
-    places
+    places: []
   });
 
   try {
@@ -55,15 +55,24 @@ const signUpUser = async (req, res, next) => {
   res.status(201).json({user: createUser.toObject({ getters: true })})
 };
 
-const logInUser = ((req, res, next) => {
+const logInUser = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = DUMMY_DATA.find(u => u.email === email);
-  if(!user || user.password !== password) {
-    return next(new HttpError('No user with that email or password in databas.', 401));
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email })
+  } catch (err) {
+    const error = new HttpError('Login failed, please tyr agin.', 500);
+    return next(error);
   }
-  res.json({msg: 'login'});
-});
+
+  if(!existingUser || existingUser.password !== password) {
+    const error = new HttpError('Login failed, please tyr agin.', 401);
+    return next(error);
+  }
+
+  res.json({msg: 'Logged in!'});
+};
 
 exports.getUsers = getUsers;
 exports.signUpUser = signUpUser;
